@@ -19,25 +19,24 @@ bool Balde::buscar(const std::string& pseudoKey)
 std::vector<std::string>::iterator Balde::buscarPosicao(const std::string& pseudoKey)
 {
 	std::vector<std::string>::iterator it = this->keys.begin();
-	while(it != this->keys.end() && pseudoKey < *it) ++it;
+	//busca posicao em que a pseudo-chave pode ser inserida
+	//mantendo a ordenacao do vetor
+	while(it != this->keys.end() && pseudoKey.compare(*it) > 0) ++it;
 	return it;
 }
 
+//insere na ordem crescente
 int Balde::inserir(const std::string& pseudoKey)
 {
 	//se balde estiver cheio, dividir balde
-	if(this->keys.size() >= tamBalde) {
-		this->atualizarProfundidade();
+	if(this->keys.size() >= tamBalde)
 		return -1;
-	}
 
 	auto it = buscarPosicao(pseudoKey);
 
-	//se tiver encontrado, entao nao precisa inserir novamente
 	if(it != this->keys.end() && pseudoKey == *it)
 		return 0;
-
-	//insere na ordem crescente
+	
 	this->keys.insert(it, pseudoKey);
 	return 1;
 }
@@ -51,21 +50,30 @@ Balde* Balde::dividir()
 	
 	auto it = this->keys.begin();
 	for(auto next = it+1; next != this->keys.end(); ++it, ++next) {
-		//se primeiros digitos de atual < primeiros digitos de proximo
-		//insere maior pseudo-chave no novo balde
-		if((*it).substr(0, localDepth) < (*next).substr(0, localDepth)) {
-			auxKeys.push_back(*it);
-			novoBalde->keys.push_back(*next);
-		}
 		//como o vetor esta ordenado
 		//se primeiros digitos de atual == primeiros digitos de proximo
 		//mantem pseudo-chaves no balde atual
-		else {
+		if((*it).substr(0, localDepth) == (*next).substr(0, localDepth)) {
 			auxKeys.push_back(*it);
 			auxKeys.push_back(*next);
 		}
+		//se primeiros digitos de atual < primeiros digitos de proximo
+		//mantem menor pseudo-chave no balde atual e insere maior pseudo-chave no novo balde
+		else {
+			auxKeys.push_back(*it);
+			novoBalde->keys.push_back(*next);
+		}
 	}
 
+	std::cout << "\n\n\n\nBalde atual: ";
+	for(size_t i = 0; i < auxKeys.size(); ++i)
+		std::cout << auxKeys[i] << ", ";
+
+	std::cout << "\nNovo balde: ";
+	for(size_t i = 0; i < novoBalde->keys.size(); ++i)
+		std::cout << novoBalde->keys[i] << ", ";
+
+	std::cout << "\n\n\n";
 	//atualiza pseudo-chaves do balde atual
 	this->keys = auxKeys;
 	return novoBalde;

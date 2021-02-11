@@ -7,19 +7,20 @@
 
 int main()
 {
-	size_t tamBalde = 2, nbits = 3;
+	size_t tamBalde = 2;
+	//size_t nbits = 3;
 	//std::cout << "Tamanho M dos baldes: ";
 	//std::cin >> tamBalde;
 
 	//std::cout << "Numero de bits da pseudochave: ";
 	//std::cin >> nbits;
-	
+
 	Diretorio* d = new Diretorio(tamBalde);
-	d->inserir("001");
-	d->inserir("010");
+	d->inserir("011");
+	d->inserir("000");
 	d->inserir("100");
-	d->inserir("101");
 	d->inserir("110");
+	d->inserir("001");
 	d->imprimir();
 
 	return 0;

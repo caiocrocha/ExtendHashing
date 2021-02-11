@@ -26,7 +26,7 @@ class Diretorio
 
 		bool buscar(const std::string& pseudoKey);
 		void inserir(const std::string& pseudoKey);
-		void dividir(size_t i);
+		size_t dividirBalde(const std::string& pseudoKey, size_t indice);
 		void duplicar();
 
 		size_t hash(const std::string& str);
