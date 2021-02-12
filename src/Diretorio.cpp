@@ -5,11 +5,6 @@
 #include "../include/Balde.hpp"
 #include "../include/Diretorio.hpp"
 
-bool Diretorio::buscar(const std::string& pseudoKey)
-{
-	return this->baldes[hash(pseudoKey)]->buscar(pseudoKey);
-}
-
 const size_t& Diretorio::atualizarProfundidade()
 {
 	return ++(this->globalDepth);
@@ -20,15 +15,37 @@ size_t Diretorio::hash(const std::string& pseudoKey)
 	return std::strtoul(pseudoKey.substr(0, this->globalDepth).c_str(), nullptr, 2);
 }
 
-void Diretorio::inserir(const std::string& pseudoKey)
+bool Diretorio::buscar(std::string pseudoKey)
 {
-	size_t i = hash(pseudoKey);
-	std::cout << "Indice: " << i << std::endl;
-	int status = this->baldes[i]->inserir(pseudoKey);
+	if(pseudoKey.size() < this->nbits)
+	{
+		//Inserir zeros à esquerda
+		pseudoKey.insert(0, this->nbits - pseudoKey.size(), '0');
+	}
+	return this->baldes[hash(pseudoKey)]->buscar(pseudoKey);
+}
+
+void Diretorio::inserir(std::string pseudoKey)
+{
+	if(pseudoKey.size() > this->nbits)
+	{
+		std::cout << "Não é possivel inserir esta pseudo-chave, pois ela excede "
+				  << "o número de bits especificado" << std::endl;
+		return;
+	}
+	else if(pseudoKey.size() < this->nbits)
+	{
+		//Inserir zeros à esquerda
+		pseudoKey.insert(0, this->nbits - pseudoKey.size(), '0');
+	}
+
+	size_t indice = hash(pseudoKey);
+	std::cout << "Indice: " << indice << std::endl;
+	int status = this->baldes[indice]->inserir(pseudoKey);
 
 	if(status == -1)
 	{
-		size_t novoIndice = dividirBalde(pseudoKey, i);
+		size_t novoIndice = dividirBalde(pseudoKey, indice);
 		//verificar retorno
 		std::cout << pseudoKey << " para " << novoIndice << std::endl;
 		this->baldes[novoIndice]->imprimir(10);

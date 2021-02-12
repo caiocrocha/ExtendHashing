@@ -12,10 +12,12 @@ class Diretorio
 	private:
 		std::vector<Balde*> baldes;
 		size_t globalDepth;
+		size_t nbits;
 		
 	public:
-		Diretorio(size_t tamBalde) {
+		Diretorio(size_t tamBalde, size_t nbits) {
 			this->globalDepth = 1;
+			this->nbits = nbits;
 
 			//primeiro digito 0
 			this->baldes.push_back(new Balde(1, tamBalde));
@@ -24,8 +26,8 @@ class Diretorio
 			this->baldes.push_back(new Balde(1, tamBalde));
 		}
 
-		bool buscar(const std::string& pseudoKey);
-		void inserir(const std::string& pseudoKey);
+		bool buscar(std::string pseudoKey);
+		void inserir(std::string pseudoKey);
 		size_t dividirBalde(const std::string& pseudoKey, size_t indice);
 		void duplicar();
 

@@ -10,12 +10,6 @@ const size_t& Balde::atualizarProfundidade()
 	return ++(this->localDepth);
 }
 
-bool Balde::buscar(const std::string& pseudoKey)
-{
-	auto it = buscarPosicao(pseudoKey);
-	return it != this->keys.end() && pseudoKey == *it;
-}
-
 std::vector<std::string>::iterator Balde::buscarPosicao(const std::string& pseudoKey)
 {
 	std::vector<std::string>::iterator it = this->keys.begin();
@@ -25,7 +19,12 @@ std::vector<std::string>::iterator Balde::buscarPosicao(const std::string& pseud
 	return it;
 }
 
-//insere na ordem crescente
+bool Balde::buscar(const std::string& pseudoKey)
+{
+	auto it = buscarPosicao(pseudoKey);
+	return it != this->keys.end() && pseudoKey == *it;
+}
+
 int Balde::inserir(const std::string& pseudoKey)
 {
 	//se balde estiver cheio, dividir balde
@@ -35,8 +34,12 @@ int Balde::inserir(const std::string& pseudoKey)
 	auto it = buscarPosicao(pseudoKey);
 
 	if(it != this->keys.end() && pseudoKey == *it)
+	{
+		std::cout << "Esta pseudo-chave já foi inserida!" << std::endl;
 		return 0;
+	}
 	
+	//insere na ordem crescente
 	this->keys.insert(it, pseudoKey);
 	return 1;
 }

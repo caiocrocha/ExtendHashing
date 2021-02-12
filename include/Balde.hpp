@@ -5,9 +5,6 @@
 #include <string>
 #include <vector>
 
-//profundidade global = n primeiros char da pseudochave
-//profundidade local = n primeiros char iguais no balde
-
 class Balde
 {
 	private:
