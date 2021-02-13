@@ -41,12 +41,14 @@ int Balde::inserir(const std::string& pseudoKey)
 	
 	//insere na ordem crescente
 	this->keys.insert(it, pseudoKey);
+	std::cout << pseudoKey << " " << sizeof(this->keys[0]) << " bytes" << std::endl;
 	return 1;
 }
 
 Balde* Balde::dividir()
 {
 	size_t localDepth = this->atualizarProfundidade();
+	std::cout << "Atualiza profundidade: " << localDepth << std::endl;
 
 	std::vector<std::string> auxKeys;
 	Balde* novoBalde = new Balde(localDepth, this->getTamBalde());
@@ -57,18 +59,19 @@ Balde* Balde::dividir()
 		//se primeiros digitos de atual == primeiros digitos de proximo
 		//mantem pseudo-chaves no balde atual
 		if((*it).substr(0, localDepth) == (*next).substr(0, localDepth)) {
-			auxKeys.push_back(*it);
-			auxKeys.push_back(*next);
+			auxKeys.push_back(std::move(*it));
+			auxKeys.push_back(std::move(*next));
 		}
 		//se primeiros digitos de atual < primeiros digitos de proximo
 		//mantem menor pseudo-chave no balde atual e insere maior pseudo-chave no novo balde
 		else {
-			auxKeys.push_back(*it);
-			novoBalde->keys.push_back(*next);
+			auxKeys.push_back(std::move(*it));
+			novoBalde->keys.push_back(std::move(*next));
 		}
 	}
 
-	std::cout << "\n\n\n\nBalde atual: ";
+	/*
+	std::cout << "\n\nBalde atual: ";
 	for(size_t i = 0; i < auxKeys.size(); ++i)
 		std::cout << auxKeys[i] << ", ";
 
@@ -76,7 +79,9 @@ Balde* Balde::dividir()
 	for(size_t i = 0; i < novoBalde->keys.size(); ++i)
 		std::cout << novoBalde->keys[i] << ", ";
 
-	std::cout << "\n\n\n";
+	std::cout << "\n\n";
+	*/
+
 	//atualiza pseudo-chaves do balde atual
 	this->keys = auxKeys;
 	return novoBalde;

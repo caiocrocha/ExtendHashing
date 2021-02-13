@@ -40,37 +40,38 @@ void Diretorio::inserir(std::string pseudoKey)
 	}
 
 	size_t indice = hash(pseudoKey);
-	std::cout << "Indice: " << indice << std::endl;
+	//std::cout << "Indice do balde: " << indice << std::endl;
 	int status = this->baldes[indice]->inserir(pseudoKey);
 
 	if(status == -1)
 	{
 		size_t novoIndice = dividirBalde(pseudoKey, indice);
 		//verificar retorno
-		std::cout << pseudoKey << " para " << novoIndice << std::endl;
-		this->baldes[novoIndice]->imprimir(10);
-		std::cout << "\n\n";
+		//std::cout << pseudoKey << " para " << novoIndice << std::endl;
+		//this->baldes[novoIndice]->imprimir(10);
+		//std::cout << "\n\n";
 		this->baldes[novoIndice]->inserir(pseudoKey);
-		this->baldes[novoIndice]->imprimir(10);
-		std::cout << "\n\n";
+		//this->baldes[novoIndice]->imprimir(10);
+		//std::cout << "\n\n";
 	}
 }
 
 size_t Diretorio::dividirBalde(const std::string& pseudoKey, size_t indice)
 {
-	std::cout << "Divide" << std::endl;
+	//std::cout << "Divide balde " << indice << std::endl;
 	if(this->globalDepth <= baldes[indice]->getLocalDepth())
 		duplicar();
 
 	size_t novoIndice = hash(pseudoKey);
+	//std::cout << "Novo indice: " << novoIndice << std::endl;
 	Balde* novoBalde = baldes[novoIndice]->dividir();
-	this->baldes[novoIndice] = novoBalde;
+	this->baldes[novoIndice + 1 - novoIndice % 2] = novoBalde;
 	return novoIndice;
 }
 
 void Diretorio::duplicar()
 {
-	std::cout << "Duplica" << std::endl;
+	//std::cout << "Duplica" << std::endl;
 	this->atualizarProfundidade();
 	std::vector<Balde*> auxBaldes(this->baldes.size() * 2);
 
@@ -81,9 +82,9 @@ void Diretorio::duplicar()
 	}
 	
 	this->baldes = auxBaldes;
-	std::cout << "\n\nImprimindo diretorio" << std::endl;
-	this->imprimir();
-	std::cout << "\n\n\n";
+	//std::cout << "\n\nImprimindo diretorio" << std::endl;
+	//this->imprimir();
+	//std::cout << "\n\n";
 }
 
 std::string decimalToBinary(int n)
