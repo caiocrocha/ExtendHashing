@@ -2,6 +2,7 @@
 #include <string>
 #include <algorithm>
 #include <iomanip>
+#include <fstream>
 
 #include "../include/Balde.hpp"
 #include "../include/utils.hpp"
@@ -56,8 +57,8 @@ Balde* Balde::dividir(size_t novoIndice, size_t globalDepth)
 
 	for(auto it = this->keys.begin(); it != this->keys.end(); ++it)
 	{
-		//se novoIndice <= indice da pseudo-chave atual, entao adiciona chave ao novo balde
-		if(novoIndice <= hash(*it, globalDepth))
+		//se novoIndice == indice da pseudo-chave atual, entao adiciona chave ao novo balde
+		if(novoIndice == hash(*it, globalDepth))
 			novoBalde->keys.push_back(*it);
 		else //mantem pseudo-chave no balde atual
 			auxKeys.push_back(*it);
@@ -69,15 +70,15 @@ Balde* Balde::dividir(size_t novoIndice, size_t globalDepth)
 	return novoBalde;
 }
 
-void Balde::imprimir(size_t n)
+void Balde::imprimir(std::ofstream& log, size_t n)
 {
 	auto it = this->keys.begin();
 	if(it == this->keys.end()) {
-		std::cout << "Empty" << std::endl;
+		log << "Empty" << std::endl;
 		return;
 	}
 
-	std::cout << (*it) << "\tEndereco: " << this << std::endl;
+	log << (*it) << "\tEndereco: " << this << std::endl;
 	for(it = it+1; it != this->keys.end(); ++it)
-		std::cout << std::setfill(' ') << std::setw(n + (*it).size()) << (*it) << std::endl;
+		log << std::setfill(' ') << std::setw(n + (*it).size()) << (*it) << std::endl;
 }

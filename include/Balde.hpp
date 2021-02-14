@@ -28,7 +28,7 @@ class Balde
 		size_t getLocalDepth() { return this->localDepth; };
 		size_t getTamBalde() { return this->keys.size(); };
 
-		void imprimir(size_t n);
+		void imprimir(std::ofstream& log, size_t n);
 };
 
 #endif /* BALDE_HPP */

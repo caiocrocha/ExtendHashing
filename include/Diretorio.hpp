@@ -34,7 +34,7 @@ class Diretorio
 		const size_t& atualizarProfundidade();
 		const size_t& getGlobalDepth() { return this->globalDepth; };
 		
-		void imprimir();
+		void imprimir(std::ofstream& log);
 };
 
 #endif /* DIRETORIO_HPP */

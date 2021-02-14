@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
+#include <fstream>
 
 #include "../include/Balde.hpp"
 #include "../include/Diretorio.hpp"
@@ -35,7 +36,6 @@ void Diretorio::inserir(std::string pseudoKey)
 		pseudoKey.insert(0, this->nbits - pseudoKey.size(), '0');
 	}
 
-	std::cout << "Insere " << pseudoKey << std::endl;
 	size_t indice = hash(pseudoKey, this->globalDepth);
 	int status = this->baldes[indice]->inserir(pseudoKey);
 
@@ -48,18 +48,16 @@ void Diretorio::inserir(std::string pseudoKey)
 
 void Diretorio::dividirBalde(const std::string& pseudoKey, size_t indice)
 {
-	std::cout << "Divide balde " << indice << std::endl;
-	if(this->globalDepth <= baldes[indice]->getLocalDepth() && this->globalDepth <= this->nbits)
+	if(this->globalDepth < baldes[indice]->getLocalDepth() && this->globalDepth <= this->nbits)
 		duplicar();
 
 	size_t novoIndice = hash(pseudoKey, this->globalDepth);
 	Balde* novoBalde = this->baldes[novoIndice]->dividir(novoIndice, this->globalDepth);
-	this->baldes[novoIndice + 1 - novoIndice % 2] = novoBalde;
+	this->baldes[novoIndice] = novoBalde;
 }
 
 void Diretorio::duplicar()
 {
-	std::cout << "Duplica" << std::endl;
 	this->atualizarProfundidade();
 	std::vector<Balde*> auxBaldes(this->baldes.size() * 2);
 
@@ -71,9 +69,6 @@ void Diretorio::duplicar()
 	
 	this->baldes.clear();
 	this->baldes = auxBaldes;
-	std::cout << "\n\nImprimindo diretorio" << std::endl;
-	this->imprimir();
-	std::cout << "\n\n";
 }
 
 std::string decimalToBinary(int n)
@@ -89,11 +84,10 @@ std::string decimalToBinary(int n)
 	return std::string(s.rbegin(), s.rend());
 }
 
-void Diretorio::imprimir()
+void Diretorio::imprimir(std::ofstream& log)
 {
 	for(size_t i = 0; i < this->baldes.size(); ++i) {
-		std::cout << std::setfill('0') << std::setw(this->globalDepth) << decimalToBinary(i) << " - ";
-		this->baldes[i]->imprimir(this->globalDepth + 3); //numero de espacos à esquerda
+		log << std::setfill('0') << std::setw(this->globalDepth) << decimalToBinary(i) << " - ";
+		this->baldes[i]->imprimir(log, this->globalDepth + 3); //numero de espacos à esquerda
 	}
-	std::cout << "\n\n";
 }
