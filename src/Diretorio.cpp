@@ -4,15 +4,11 @@
 
 #include "../include/Balde.hpp"
 #include "../include/Diretorio.hpp"
+#include "../include/utils.hpp"
 
 const size_t& Diretorio::atualizarProfundidade()
 {
 	return ++(this->globalDepth);
-}
-
-size_t Diretorio::hash(const std::string& pseudoKey)
-{
-	return std::strtoul(pseudoKey.substr(0, this->globalDepth).c_str(), nullptr, 2);
 }
 
 bool Diretorio::buscar(std::string pseudoKey)
@@ -22,7 +18,7 @@ bool Diretorio::buscar(std::string pseudoKey)
 		//Inserir zeros à esquerda
 		pseudoKey.insert(0, this->nbits - pseudoKey.size(), '0');
 	}
-	return this->baldes[hash(pseudoKey)]->buscar(pseudoKey);
+	return this->baldes[hash(pseudoKey, this->globalDepth)]->buscar(pseudoKey);
 }
 
 void Diretorio::inserir(std::string pseudoKey)
@@ -39,39 +35,31 @@ void Diretorio::inserir(std::string pseudoKey)
 		pseudoKey.insert(0, this->nbits - pseudoKey.size(), '0');
 	}
 
-	size_t indice = hash(pseudoKey);
-	//std::cout << "Indice do balde: " << indice << std::endl;
+	std::cout << "Insere " << pseudoKey << std::endl;
+	size_t indice = hash(pseudoKey, this->globalDepth);
 	int status = this->baldes[indice]->inserir(pseudoKey);
 
-	if(status == -1)
+	if(status == 0)
 	{
-		size_t novoIndice = dividirBalde(pseudoKey, indice);
-		//verificar retorno
-		//std::cout << pseudoKey << " para " << novoIndice << std::endl;
-		//this->baldes[novoIndice]->imprimir(10);
-		//std::cout << "\n\n";
-		this->baldes[novoIndice]->inserir(pseudoKey);
-		//this->baldes[novoIndice]->imprimir(10);
-		//std::cout << "\n\n";
+		dividirBalde(pseudoKey, indice);
+		this->inserir(pseudoKey);
 	}
 }
 
-size_t Diretorio::dividirBalde(const std::string& pseudoKey, size_t indice)
+void Diretorio::dividirBalde(const std::string& pseudoKey, size_t indice)
 {
-	//std::cout << "Divide balde " << indice << std::endl;
-	if(this->globalDepth <= baldes[indice]->getLocalDepth())
+	std::cout << "Divide balde " << indice << std::endl;
+	if(this->globalDepth <= baldes[indice]->getLocalDepth() && this->globalDepth <= this->nbits)
 		duplicar();
 
-	size_t novoIndice = hash(pseudoKey);
-	//std::cout << "Novo indice: " << novoIndice << std::endl;
-	Balde* novoBalde = baldes[novoIndice]->dividir();
+	size_t novoIndice = hash(pseudoKey, this->globalDepth);
+	Balde* novoBalde = this->baldes[novoIndice]->dividir(novoIndice, this->globalDepth);
 	this->baldes[novoIndice + 1 - novoIndice % 2] = novoBalde;
-	return novoIndice;
 }
 
 void Diretorio::duplicar()
 {
-	//std::cout << "Duplica" << std::endl;
+	std::cout << "Duplica" << std::endl;
 	this->atualizarProfundidade();
 	std::vector<Balde*> auxBaldes(this->baldes.size() * 2);
 
@@ -81,10 +69,11 @@ void Diretorio::duplicar()
 		auxBaldes[i * 2 + 1] = this->baldes[i];
 	}
 	
+	this->baldes.clear();
 	this->baldes = auxBaldes;
-	//std::cout << "\n\nImprimindo diretorio" << std::endl;
-	//this->imprimir();
-	//std::cout << "\n\n";
+	std::cout << "\n\nImprimindo diretorio" << std::endl;
+	this->imprimir();
+	std::cout << "\n\n";
 }
 
 std::string decimalToBinary(int n)
@@ -106,5 +95,5 @@ void Diretorio::imprimir()
 		std::cout << std::setfill('0') << std::setw(this->globalDepth) << decimalToBinary(i) << " - ";
 		this->baldes[i]->imprimir(this->globalDepth + 3); //numero de espacos à esquerda
 	}
-	
+	std::cout << "\n\n";
 }

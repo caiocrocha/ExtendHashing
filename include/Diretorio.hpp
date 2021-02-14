@@ -28,12 +28,10 @@ class Diretorio
 
 		bool buscar(std::string pseudoKey);
 		void inserir(std::string pseudoKey);
-		size_t dividirBalde(const std::string& pseudoKey, size_t indice);
+		void dividirBalde(const std::string& pseudoKey, size_t indice);
 		void duplicar();
 
-		size_t hash(const std::string& str);
 		const size_t& atualizarProfundidade();
-
 		const size_t& getGlobalDepth() { return this->globalDepth; };
 		
 		void imprimir();

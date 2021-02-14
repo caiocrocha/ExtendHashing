@@ -4,6 +4,7 @@
 #include <iomanip>
 
 #include "../include/Balde.hpp"
+#include "../include/utils.hpp"
 
 const size_t& Balde::atualizarProfundidade()
 {
@@ -27,62 +28,43 @@ bool Balde::buscar(const std::string& pseudoKey)
 
 int Balde::inserir(const std::string& pseudoKey)
 {
-	//se balde estiver cheio, dividir balde
-	if(this->keys.size() >= tamBalde)
-		return -1;
-
 	auto it = buscarPosicao(pseudoKey);
-
 	if(it != this->keys.end() && pseudoKey == *it)
 	{
 		std::cout << "Esta pseudo-chave já foi inserida!" << std::endl;
-		return 0;
+		return -1;
 	}
+
+	//se balde estiver cheio, dividir balde
+	if(this->keys.size() >= this->tamMax)
+		return 0;
 	
 	//insere na ordem crescente
 	this->keys.insert(it, pseudoKey);
-	std::cout << pseudoKey << " " << sizeof(this->keys[0]) << " bytes" << std::endl;
+	//std::cout << pseudoKey << " " << sizeof(this->keys[0]) << " bytes" << std::endl;
 	return 1;
 }
 
-Balde* Balde::dividir()
+Balde* Balde::dividir(size_t novoIndice, size_t globalDepth)
 {
+	//atualiza profundidade local
 	size_t localDepth = this->atualizarProfundidade();
-	std::cout << "Atualiza profundidade: " << localDepth << std::endl;
 
+	//vetor das pseudo-chaves do balde atual
 	std::vector<std::string> auxKeys;
 	Balde* novoBalde = new Balde(localDepth, this->getTamBalde());
-	
-	auto it = this->keys.begin();
-	for(auto next = it+1; next != this->keys.end(); ++it, ++next) {
-		//como o vetor esta ordenado
-		//se primeiros digitos de atual == primeiros digitos de proximo
-		//mantem pseudo-chaves no balde atual
-		if((*it).substr(0, localDepth) == (*next).substr(0, localDepth)) {
-			auxKeys.push_back(std::move(*it));
-			auxKeys.push_back(std::move(*next));
-		}
-		//se primeiros digitos de atual < primeiros digitos de proximo
-		//mantem menor pseudo-chave no balde atual e insere maior pseudo-chave no novo balde
-		else {
-			auxKeys.push_back(std::move(*it));
-			novoBalde->keys.push_back(std::move(*next));
-		}
+
+	for(auto it = this->keys.begin(); it != this->keys.end(); ++it)
+	{
+		//se novoIndice <= indice da pseudo-chave atual, entao adiciona chave ao novo balde
+		if(novoIndice <= hash(*it, globalDepth))
+			novoBalde->keys.push_back(*it);
+		else //mantem pseudo-chave no balde atual
+			auxKeys.push_back(*it);
 	}
 
-	/*
-	std::cout << "\n\nBalde atual: ";
-	for(size_t i = 0; i < auxKeys.size(); ++i)
-		std::cout << auxKeys[i] << ", ";
-
-	std::cout << "\nNovo balde: ";
-	for(size_t i = 0; i < novoBalde->keys.size(); ++i)
-		std::cout << novoBalde->keys[i] << ", ";
-
-	std::cout << "\n\n";
-	*/
-
 	//atualiza pseudo-chaves do balde atual
+	this->keys.clear();
 	this->keys = auxKeys;
 	return novoBalde;
 }

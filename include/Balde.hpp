@@ -10,23 +10,23 @@ class Balde
 	private:
 		std::vector<std::string> keys;
 		size_t localDepth;
-		size_t tamBalde;
+		size_t tamMax;
 
 		std::vector<std::string>::iterator buscarPosicao(const std::string& pseudoKey);
 		
 	public:
-		Balde(size_t localDepth, size_t tamBalde) {
+		Balde(size_t localDepth, size_t tamMax) {
 			this->localDepth = localDepth;
-			this->tamBalde = tamBalde;
+			this->tamMax = tamMax;
 		}
 
 		const size_t& atualizarProfundidade();
 		bool buscar(const std::string& pseudoKey);
 		int inserir(const std::string& pseudoKey);
-		Balde* dividir();
+		Balde* dividir(size_t novoIndice, size_t globalDepth);
 
-		const size_t& getLocalDepth() { return this->localDepth; };
-		const size_t& getTamBalde() { return this->tamBalde; };
+		size_t getLocalDepth() { return this->localDepth; };
+		size_t getTamBalde() { return this->keys.size(); };
 
 		void imprimir(size_t n);
 };

@@ -7,14 +7,14 @@
 
 int main()
 {
-	size_t tamBalde = 2, nbits = 3;
+	size_t tamMax = 2, nbits = 4;
 	//std::cout << "Tamanho M dos baldes: ";
 	//std::cin >> tamBalde;
 
 	//std::cout << "Numero de bits da pseudochave: ";
 	//std::cin >> nbits;
 
-	Diretorio* d = new Diretorio(tamBalde, nbits);
+	Diretorio* d = new Diretorio(tamMax, nbits);
 	
 	/*
 	std::random_device rd; // obtain a random number from hardware
@@ -30,17 +30,25 @@ int main()
 	}
 	*/
 
-	d->inserir("010");
-	d->inserir("011");
-	d->inserir("011");
-	d->inserir("110");
-	d->inserir("101");
-	d->inserir("011"); // ja foi inserida
-	d->inserir("010");
-	d->inserir("000");
-	d->inserir("001");
-	d->inserir("111");
-
+	d->inserir("1100");
+	d->imprimir();
+	d->inserir("1101");
+	d->imprimir();
+	d->inserir("0110");
+	d->imprimir();
+	d->inserir("1011");
+	d->imprimir();
+	d->inserir("1010"); // ja foi inserida
+	d->imprimir();
+	d->inserir("0001");
+	d->imprimir();
+	d->inserir("1101");
+	d->imprimir();
+	d->inserir("0001");
+	d->imprimir();
+	d->inserir("0110");
+	d->imprimir();
+	d->inserir("1010");
 	d->imprimir();
 
 	return 0;
