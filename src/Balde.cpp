@@ -32,13 +32,13 @@ int Balde::inserir(const std::string& pseudoKey)
 	auto it = buscarPosicao(pseudoKey);
 	if(it != this->keys.end() && pseudoKey == *it)
 	{
-		std::cout << "Esta pseudo-chave já foi inserida!" << std::endl;
-		return -1;
+		//std::cout << "Esta pseudo-chave já foi inserida!" << std::endl;
+		return 0;
 	}
 
 	//se balde estiver cheio, dividir balde
 	if(this->keys.size() >= this->tamMax)
-		return 0;
+		return -1;
 	
 	//insere na ordem crescente
 	this->keys.insert(it, pseudoKey);
@@ -58,7 +58,7 @@ Balde* Balde::dividir(size_t novoIndice, size_t globalDepth)
 	for(auto it = this->keys.begin(); it != this->keys.end(); ++it)
 	{
 		//se novoIndice == indice da pseudo-chave atual, entao adiciona chave ao novo balde
-		if(novoIndice == hash(*it, globalDepth))
+		if(novoIndice == getIndice(*it, globalDepth))
 			novoBalde->keys.push_back(*it);
 		else //mantem pseudo-chave no balde atual
 			auxKeys.push_back(*it);
@@ -81,4 +81,9 @@ void Balde::imprimir(std::ofstream& log, size_t n)
 	log << (*it) << "\tEndereco: " << this << std::endl;
 	for(it = it+1; it != this->keys.end(); ++it)
 		log << std::setfill(' ') << std::setw(n + (*it).size()) << (*it) << std::endl;
+}
+
+size_t Balde::getTamBaldeBytes()
+{
+	return this->keys.capacity() * sizeof(std::string) + sizeof(this->keys);
 }

@@ -27,14 +27,18 @@ class Diretorio
 		}
 
 		bool buscar(std::string pseudoKey);
-		void inserir(std::string pseudoKey);
-		void dividirBalde(const std::string& pseudoKey, size_t indice);
+		int inserir(std::string pseudoKey);
+		int dividirBalde(const std::string& pseudoKey, size_t indice);
 		void duplicar();
 
 		const size_t& atualizarProfundidade();
 		const size_t& getGlobalDepth() { return this->globalDepth; };
 		
 		void imprimir(std::ofstream& log);
+		size_t getTamDiretorio();
+		size_t getNBaldes();
+		size_t getTamDiretorioBytes();
+
 };
 
 #endif /* DIRETORIO_HPP */

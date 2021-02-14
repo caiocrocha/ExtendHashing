@@ -29,6 +29,7 @@ class Balde
 		size_t getTamBalde() { return this->keys.size(); };
 
 		void imprimir(std::ofstream& log, size_t n);
+		size_t getTamBaldeBytes();
 };
 
 #endif /* BALDE_HPP */
